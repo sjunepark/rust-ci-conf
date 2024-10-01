@@ -1,0 +1,22 @@
+# ref: https://docs.codecov.com/docs/codecov-yaml
+
+coverage:
+  range: 80..100
+  round: down
+  precision: 1
+  status:
+    # ref: https://docs.codecov.com/docs/commit-status
+    project:
+      default:
+        # Avoid false negatives
+        threshold: 1%
+
+# Test files aren't important for coverage;
+# When using `cargo-llvm-cov`, it will exclude codes contained in directories named `tests` even without this config
+ignore:
+  - "**/tests/**/*"
+
+# Make comments less noisy
+comment:
+  layout: "files"
+  require_changes: true
