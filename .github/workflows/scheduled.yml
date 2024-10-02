@@ -1,6 +1,5 @@
-# Run scheduled (rolling) jobs on a nightly basis, as your crate may break independently of any
-# given PR. E.g., updates to rust nightly and updates to this crates dependencies. See check.yml for
-# information about how the concurrency cancellation and workflow triggering works
+# Run scheduled (rolling) jobs on a nightly basis, as your crate may break independently of any given PR.
+# E.g., updates to rust nightly and updates to this crate's dependencies.
 
 name: scheduled
 
@@ -17,12 +16,12 @@ on:
   schedule:
     - cron: '7 7 * * *'
 
+# See check.yml for information about how the concurrency cancellation and workflow triggering works
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
-  # https://twitter.com/mycoliza/status/1571295690063753218
   nightly:
     runs-on: ubuntu-latest
     name: ubuntu / nightly
@@ -38,8 +37,9 @@ jobs:
       - name: Install nextest
         uses: taiki-e/install-action@nextest
       - run: cargo nextest run --locked --workspace --all-features --all-targets
-        # Nextest currently [doesn't support doctests](https://github.com/nextest-rs/nextest/issues/16)
-        # For `cargo test`, there's a issue that [cargo test --all-targets does not run doc tests](https://github.com/rust-lang/cargo/issues/6669)
+        # Check test.yml for more information about why we don't:
+        # 1. Use nextest for doctests
+        # 2. Run doctests without --all-targets
       - run: cargo test --doc --locked --workspace --all-features
   update:
     # This action checks that updating the dependencies of this crate to the latest available
